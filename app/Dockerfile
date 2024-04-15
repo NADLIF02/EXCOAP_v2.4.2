@@ -5,7 +5,8 @@ FROM python:3.8-slim
 WORKDIR /app
 # Installer les dépendances
 RUN pip install --upgrade pip
-
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r .app/requirements.txt
 # Copier les fichiers nécessaires
 COPY . /app
 ENV NAME World
