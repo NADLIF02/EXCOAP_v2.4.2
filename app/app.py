@@ -38,6 +38,19 @@ def get_user_leaves():
         {'user': 'Bob', 'start': '2024-04-20', 'end': '2024-04-22'}
     ]
     return jsonify(user_leaves)
+@app.route('/submit-leave', methods=['POST'])
+def submit_leave():
+    data = request.form
+    start_date = data['start']
+    end_date = data['end']
+    description = data['description']
+    # Logic to save the leave request to the database
+    # For now, let's just simulate a response
+    return jsonify({
+        'title': description,
+        'start': start_date,
+        'end': end_date
+    })
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
