@@ -49,24 +49,69 @@
         </ul>
     </div>
     <div id="calendar-container">
-        <div id="calendar"></div>
+        <div id='calendar'></div>
+    </div>
+
+    <!-- Modal for submitting leave requests -->
+    <div class="modal fade" id="leaveModal" tabindex="-1" role="dialog" aria-labelledby="leaveModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="leaveModalLabel">Submit Leave Request</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form id="leaveForm">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="leave-start">Start Date</label>
+                            <input type="date" class="form-control" id="leave-start" name="start" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="leave-end">End Date</label>
+                            <input type="date" class="form-control" id="leave-end" name="end" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit Request</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 
     <script>
         $(document).ready(function() {
             $('#calendar').fullCalendar({
-                defaultView: 'agendaWeek',
                 header: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'agendaDay,agendaWeek,month'
+                    right: 'month,agendaWeek,agendaDay'
                 },
                 editable: true,
                 selectable: true,
-                eventLimit: true, // Allow more than one event per day
-                aspectRatio: 3,  // Wider than tall
-                scrollTime: '08:00:00',  // Start at 8:00 AM
-                slotDuration: '00:30:00',  // 30-minute slots
+                selectHelper: true,
+                select: function(start, end) {
+                    $('#leave-start').val(start.format('YYYY-MM-DD'));
+                    $('#leave-end').val(end.format('YYYY-MM-DD'));
+                    $('#leaveModal').modal('show');
+                    $('#calendar').fullCalendar('unselect');
+                },
+                eventLimit: true // for all non-TimeGrid views
+            });
+
+            $('#leaveForm').on('submit', function(e) {
+                e.preventDefault();
+                var formData = $(this).serializeArray();
+                var eventData = {
+                    title: 'Leave', // Default title for the event
+                    start: formData[0].value,
+                    end: formData[1].value
+                };
+                $('#calendar').fullCalendar('renderEvent', eventData, true); // stick the event
+                $('#leaveModal').modal('hide');
             });
         });
     </script>
