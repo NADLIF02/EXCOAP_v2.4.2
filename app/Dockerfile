@@ -5,7 +5,6 @@ FROM python:3.8-slim
 WORKDIR /app
 # Installer les dépendances
 RUN pip install --upgrade pip
-RUN requirements.txt
 
 # Copier les fichiers nécessaires
 COPY . /app
