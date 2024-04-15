@@ -1,6 +1,6 @@
 # Specify the base image
 FROM mariadb:latest
-RUN apt-get update && apt-get install default-mysql-client
+RUN apt-get update && apt-get install default-mysql-client -y
 
 # Set environment variables for MariaDB to initialize
 ENV MYSQL_ROOT_PASSWORD=rootpassword
