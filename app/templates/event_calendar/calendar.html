@@ -3,9 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Outlook-Style Calendar</title>
+    <title>Modern Team Calendar</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css' rel='stylesheet' />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -13,50 +14,52 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js'></script>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            background-color: #f8f9fa;
+            display: flex;
+            height: 100vh;
+            color: #333;
+            background-color: #e9ecef;
         }
         #sidebar {
-            float: left;
             width: 250px;
-            height: 100vh;
-            overflow-y: auto;
-            background-color: #ffffff;
+            background-color: #fff;
             padding: 20px;
-            border-right: 1px solid #ccc;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+            overflow-y: auto;
         }
         #calendar-container {
-            margin-left: 250px;
+            flex-grow: 1;
             padding: 20px;
         }
         #calendar {
-            background-color: #ffffff;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .fc-view-container {
-            border-radius: 5px;
-            overflow: hidden;
-        }
-        .fc-toolbar {
-            background-color: #f8f9fa;
+            background-color: #fff;
             border: none;
-            border-bottom: 1px solid #ccc;
-            border-radius: 5px 5px 0 0;
-            padding: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .fc-toolbar h2 {
+            font-size: 20px;
+            font-weight: 500;
+        }
+        .fc-button {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+        }
+        .fc-button:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
 <body>
     <div id="sidebar">
-        <h4>Team Members</h4>
-        <ul>
+        <h4 class="mb-4">Team Members</h4>
+        <ul class="list-unstyled">
             <li>Alice</li>
             <li>Bob</li>
             <li>Charlie</li>
-            <!-- Add more team members dynamically here -->
+            <!-- Additional team members here -->
         </ul>
     </div>
     <div id="calendar-container">
@@ -82,10 +85,10 @@
                     $('#end-date').val(endDate);
                     $('#leaveModal').modal('show');
 
-                    $('#calendar').fullCalendar('unselect'); // clear selection
+                    $('#calendar').fullCalendar('unselect');
                 },
                 eventClick: function(event, jsEvent, view) {
-                    // Allow editing or reviewing event details
+                    // Editing or reviewing event details
                 }
             });
         });
