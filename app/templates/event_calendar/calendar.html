@@ -6,13 +6,48 @@
     <title>Interactive Team Calendar</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css' rel='stylesheet' />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js'></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            display: flex;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            background-color: #f4f6f8;
+        }
+        #user-list {
+            width: 200px;
+            overflow-y: auto;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+        #calendar-container {
+            flex-grow: 1;
+            overflow-x: auto;
+            padding: 20px;
+        }
+        #calendar {
+            min-width: 1000px; /* Ensure there's enough room to scroll horizontally */
+        }
+    </style>
 </head>
 <body>
+    <div id="user-list">
+        <h4>Team Members</h4>
+        <ul class="list-unstyled">
+            <li>Alice</li>
+            <li>Bob</li>
+            <li>Charlie</li>
+            <!-- More users can be added here -->
+        </ul>
+    </div>
     <div id="calendar-container">
         <div id='calendar'></div>
     </div>
@@ -29,10 +64,6 @@
                 </div>
                 <form id="leaveForm">
                     <div class="modal-body">
-                        <div class="form-group">
-                            <label for="user-name">User Name</label>
-                            <input type="text" class="form-control" id="user-name" name="userName" required>
-                        </div>
                         <div class="form-group">
                             <label for="leave-start">Start Date</label>
                             <input type="date" class="form-control" id="leave-start" name="start" required>
@@ -61,18 +92,23 @@
                 },
                 editable: true,
                 selectable: true,
-                eventLimit: true // for all non-agenda views
+                selectHelper: true,
+                select: function(start, end) {
+                    $('#leave-start').val(start.format('YYYY-MM-DD'));
+                    $('#leave-end').val(end.format('YYYY-MM-DD'));
+                    $('#leaveModal').modal('show');
+                    $('#calendar').fullCalendar('unselect');
+                },
+                eventLimit: true // for all non-TimeGrid views
             });
 
             $('#leaveForm').on('submit', function(e) {
                 e.preventDefault();
-                var userName = $('#user-name').val();
-                var start = $('#leave-start').val();
-                var end = $('#leave-end').val();
+                var formData = $(this).serializeArray();
                 var eventData = {
-                    title: userName + "'s Leave", // Title includes the user's name
-                    start: start,
-                    end: end
+                    title: 'Leave', // Default title for the event
+                    start: formData[0].value,
+                    end: formData[1].value
                 };
                 $('#calendar').fullCalendar('renderEvent', eventData, true); // stick the event
                 $('#leaveModal').modal('hide');
