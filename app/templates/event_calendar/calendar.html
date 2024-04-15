@@ -55,64 +55,55 @@
         </div>
     </div>
 
-    <script>
-        $(document).ready(function() {
-            var currentMonth = moment().month();
-            var year = moment().year();
+   <script>
+$(document).ready(function() {
+    var currentMonth = moment().month();
+    var year = moment().year();
 
-            createCalendar('#calendar1', moment([year, currentMonth, 1]));
-            createCalendar('#calendar2', moment([year, currentMonth + 1, 1]));
-            createCalendar('#calendar3', moment([year, currentMonth + 2, 1]));
+    createCalendar('#calendar1', moment([year, currentMonth, 1]));
+    createCalendar('#calendar2', moment([year, currentMonth + 1, 1]));
+    createCalendar('#calendar3', moment([year, currentMonth + 2, 1]));
 
-            function createCalendar(selector, defaultDate) {
-                $(selector).fullCalendar({
-                    defaultDate: defaultDate,
-                    header: false, // hide header in individual calendars
-                    editable: true,
-                    selectable: true,
-                    selectHelper: true,
-                    select: function(start, end) {
-                        var startDate = start.format('YYYY-MM-DD');
-                        var endDate = end.subtract(1, 'days').format('YYYY-MM-DD');
+    function createCalendar(selector, defaultDate) {
+        $(selector).fullCalendar({
+            defaultDate: defaultDate,
+            header: {
+                left: '',
+                center: 'title',
+                right: ''
+            },
+            editable: true,
+            selectable: true,
+            selectHelper: true,
+            select: function(start, end) {
+                var startDate = start.format('YYYY-MM-DD');
+                var endDate = end.subtract(1, 'days').format('YYYY-MM-DD');
 
-                        $('#start-date').val(startDate);
-                        $('#end-date').val(endDate);
-                        $('#leaveModal').modal('show');
-                        $('.fullCalendar').fullCalendar('unselect'); // clear selection in all calendars
-                    },
-                    eventClick: function(event, jsEvent, view) {
-                        // Allow editing or reviewing event details
-                    }
-                });
+                $('#start-date').val(startDate);
+                $('#end-date').val(endDate);
+                $('#leaveModal').modal('show');
+                $('.fullCalendar').fullCalendar('unselect'); // clear selection in all calendars
+            },
+            eventClick: function(event, jsEvent, view) {
+                // Allow editing or reviewing event details
             }
-
-            // Sync navigation for all calendars
-            $('.fc-next-button, .fc-prev-button').click(function() {
-                var action = $(this).hasClass('fc-next-button') ? 'next' : 'prev';
-                $('#calendar1').fullCalendar(action);
-                $('#calendar2').fullCalendar(action);
-                $('#calendar3').fullCalendar(action);
-            });
-
-            $('#leaveForm').on('submit', function(e) {
-                e.preventDefault();
-                var data = $(this).serialize();
-
-                $.post('/submit-leave', data, function(response) {
-                    // Add new event to all calendars
-                    $('#calendar1, #calendar2, #calendar3').fullCalendar('renderEvent', {
-                        id: response.id,
-                        title: response.title,
-                        start: response.start,
-                        end: response.end,
-                        allDay: true
-                    }, true); // stick the event
-                    $('#leaveModal').modal('hide');
-                }).fail(function() {
-                    alert('Failed to save!');
-                });
-            });
         });
-    </script>
+    }
+
+    // External navigation buttons to synchronize navigation across all calendars
+    $('#next').click(function() {
+        $('#calendar1').fullCalendar('next');
+        $('#calendar2').fullCalendar('next');
+        $('#calendar3').fullCalendar('next');
+    });
+
+    $('#prev').click(function() {
+        $('#calendar1').fullCalendar('prev');
+        $('#calendar2').fullCalendar('prev');
+        $('#calendar3').fullCalendar('prev');
+    });
+});
+</script>
+
 </body>
 </html>
