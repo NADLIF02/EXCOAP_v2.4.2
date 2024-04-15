@@ -22,7 +22,7 @@
             background-color: #f4f6f8;
         }
         #user-list {
-            width: 200px;
+            flex: 0 0 200px; /* Fixed width */
             overflow-y: auto;
             background-color: #fff;
             padding: 20px;
@@ -30,11 +30,11 @@
         }
         #calendar-container {
             flex-grow: 1;
-            overflow-x: auto;
+            overflow-x: hidden; /* Changed to hide horizontal overflow */
             padding: 20px;
         }
         #calendar {
-            min-width: 1000px; /* Ensure there's enough room to scroll horizontally */
+            width: 100%; /* Fill the container */
         }
     </style>
 </head>
@@ -110,7 +110,7 @@
                 eventClick: function(calEvent, jsEvent, view) {
                     alert('Event: ' + calEvent.title + '\nDescription: ' + calEvent.description);
                 },
-                eventLimit: true // for all non-agenda views
+                eventLimit: true // for all non-TimeGrid views
             });
 
             $('#leaveForm').on('submit', function(e) {
