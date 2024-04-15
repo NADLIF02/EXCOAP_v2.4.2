@@ -3,10 +3,6 @@ FROM python:3.8-slim
 
 # Définir le répertoire de travail
 WORKDIR /app
-
-# Copy the dependencies file to the working directory
-COPY requirements.txt 
-
 # Installer les dépendances
 RUN pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
