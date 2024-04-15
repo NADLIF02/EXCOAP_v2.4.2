@@ -1,13 +1,11 @@
-from flask import Flask
+# event_calendar/views.py
+from flask import Blueprint, render_template, session, redirect, url_for
 
-def create_app():
-    app = Flask(__name__)
-    app.config.from_pyfile('config.py')
+calendar = Blueprint('calendar', __name__, url_prefix='/calendar')
 
-    from .auth.views import auth as auth_blueprint
-    app.register_blueprint(auth_blueprint, url_prefix='/auth')
-
-    from .event_calendar.views import calendar as calendar_blueprint
-    app.register_blueprint(calendar_blueprint, url_prefix='/calendar')
-
-    return app
+@calendar.route('/')
+def display():
+    if not session.get('logged_in'):
+        return redirect(url_for('auth.login'))
+    # Logic to display calendar
+    return render_template('event_calendar/calendar.html')
