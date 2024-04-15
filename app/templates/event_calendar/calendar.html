@@ -30,5 +30,14 @@
         <li>{{ event.date.strftime('%Y-%m-%d') }}: {{ event.description }}</li>
         {% endfor %}
     </ul>
+    <script>
+  $(document).ready(function() {
+    $('#calendar').fullCalendar({
+      editable: true,  // Allows drag and drop
+      events: '/get-events',  // URL to fetch events
+    });
+  });
+</script>
+
 </body>
 </html>
