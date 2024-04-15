@@ -13,7 +13,13 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js'></script>
 </head>
 <body>
-    <div id='calendar'></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4"><div id='calendar1'></div></div>
+            <div class="col-md-4"><div id='calendar2'></div></div>
+            <div class="col-md-4"><div id='calendar3'></div></div>
+        </div>
+    </div>
 
     <!-- Modal for entering leave request -->
     <div class="modal fade" id="leaveModal" tabindex="-1" role="dialog" aria-labelledby="leaveModalLabel" aria-hidden="true">
@@ -51,39 +57,51 @@
 
     <script>
         $(document).ready(function() {
-            $('#calendar').fullCalendar({
-                header: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'month,agendaWeek,agendaDay'
-                },
-                editable: true,
-                selectable: true,
-                selectHelper: true,
-                select: function(start, end) {
-                    var startDate = start.format('YYYY-MM-DD'); // correct date format for input
-                    var endDate = end.subtract(1, 'days').format('YYYY-MM-DD'); // adjust end date
+            var currentMonth = moment().month();
+            var year = moment().year();
 
-                    $('#start-date').val(startDate);
-                    $('#end-date').val(endDate);
-                    $('#leaveModal').modal('show');
+            createCalendar('#calendar1', moment([year, currentMonth, 1]));
+            createCalendar('#calendar2', moment([year, currentMonth + 1, 1]));
+            createCalendar('#calendar3', moment([year, currentMonth + 2, 1]));
 
-                    $('#calendar').fullCalendar('unselect'); // clear selection
-                },
-                eventClick: function(event, jsEvent, view) {
-                    // Allow editing or reviewing event details
-                }
+            function createCalendar(selector, defaultDate) {
+                $(selector).fullCalendar({
+                    defaultDate: defaultDate,
+                    header: false, // hide header in individual calendars
+                    editable: true,
+                    selectable: true,
+                    selectHelper: true,
+                    select: function(start, end) {
+                        var startDate = start.format('YYYY-MM-DD');
+                        var endDate = end.subtract(1, 'days').format('YYYY-MM-DD');
+
+                        $('#start-date').val(startDate);
+                        $('#end-date').val(endDate);
+                        $('#leaveModal').modal('show');
+                        $('.fullCalendar').fullCalendar('unselect'); // clear selection in all calendars
+                    },
+                    eventClick: function(event, jsEvent, view) {
+                        // Allow editing or reviewing event details
+                    }
+                });
+            }
+
+            // Sync navigation for all calendars
+            $('.fc-next-button, .fc-prev-button').click(function() {
+                var action = $(this).hasClass('fc-next-button') ? 'next' : 'prev';
+                $('#calendar1').fullCalendar(action);
+                $('#calendar2').fullCalendar(action);
+                $('#calendar3').fullCalendar(action);
             });
 
             $('#leaveForm').on('submit', function(e) {
                 e.preventDefault();
                 var data = $(this).serialize();
 
-                // Send data to server
                 $.post('/submit-leave', data, function(response) {
-                    // Assuming response contains the event data with id to manage events
-                    $('#calendar').fullCalendar('renderEvent', {
-                        id: response.id, // unique identifier for event
+                    // Add new event to all calendars
+                    $('#calendar1, #calendar2, #calendar3').fullCalendar('renderEvent', {
+                        id: response.id,
                         title: response.title,
                         start: response.start,
                         end: response.end,
