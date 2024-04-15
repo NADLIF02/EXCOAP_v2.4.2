@@ -17,4 +17,4 @@ ENV NAME World
 EXPOSE 5000
 
 # Commande pour démarrer l'application
-CMD ["python", ".app/app.py"]
+CMD ["python", "app.py"]
