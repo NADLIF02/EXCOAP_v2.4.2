@@ -1,43 +1,39 @@
-from flask import Flask, render_template, request, redirect, url_for, session, flash, jsonify
-from werkzeug.security import generate_password_hash, check_password_hash
-from event_calendar.forms import EventForm  # Assurez-vous que ce chemin est correct
+from flask import Flask, request, render_template, redirect, url_for, flash
+from flask_bcrypt import Bcrypt
+import psycopg2
 
 app = Flask(__name__)
-app.secret_key = 'votre_clé_secrète_très_sécurisée'  # Utilisez une clé secrète forte dans les environnements de production
+app.secret_key = 'votre_cle_secrete_ici'
+bcrypt = Bcrypt(app)
 
-# Route principale après connexion
+def get_db_connection():
+    conn = psycopg2.connect("dbname=nom_de_votre_base_de_donnees user=utilisateur password=mot_de_passe")
+    return conn
+
 @app.route('/')
-def home():
-    if not session.get('logged_in'):
-        flash("Veuillez vous connecter pour accéder au calendrier.", "info")
-        return redirect(url_for('login'))
-    form = EventForm()
-    return render_template('event_calendar/calendar.html', form=form)
+def index():
+    return render_template('login.html')
 
-# Route de connexion
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/login', methods=['POST'])
 def login():
-    if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
-        # Ajoutez ici une logique de vérification contre une base de données
-        user = find_user_by_username(username)
-        if user and check_password_hash(user.password_hash, password):
-            session['logged_in'] = True
-            flash("Connexion réussie.", "success")
-            return redirect(url_for('home'))
-        else:
-            flash("Identifiant ou mot de passe incorrect.", "error")
-    return render_template('auth/login.html')
+    username = request.form['username']
+    password = request.form['password']
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("SELECT mot_de_passe FROM utilisateurs WHERE nom_utilisateur = %s", (username,))
+    user_record = cur.fetchone()
+    cur.close()
+    conn.close()
 
-# Déconnexion
-@app.route('/logout')
-def logout():
-    session.pop('logged_in', None)
-    flash("Vous avez été déconnecté.", "info")
-    return redirect(url_for('login'))
+    if user_record and bcrypt.check_password_hash(user_record[0], password):
+        return redirect(url_for('dashboard'))
+    else:
+        flash('Nom d\'utilisateur ou mot de passe incorrect.', 'error')
+        return redirect(url_for('index'))
 
-# Gérer les routes pour les événements et les demandes de congé ici...
+@app.route('/dashboard')
+def dashboard():
+    return 'Bienvenue dans votre tableau de bord!'
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug=True)
+    app.run(debug=True)
