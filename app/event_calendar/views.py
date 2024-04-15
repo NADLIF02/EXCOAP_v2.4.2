@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash, session
+from datetime import datetime
 from .forms import EventForm  # Import correct du formulaire
 
 calendar = Blueprint('calendar', __name__)
@@ -7,7 +8,7 @@ calendar = Blueprint('calendar', __name__)
 def display():
     if not session.get('logged_in'):
         return redirect(url_for('auth.login'))
-    form = EventForm()  # Création d'une instance du formulaire
+    form = EventForm()
     if form.validate_on_submit():
         event_date = form.event_date.data
         description = form.description.data
