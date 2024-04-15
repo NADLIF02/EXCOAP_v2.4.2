@@ -121,20 +121,34 @@
             });
 
             $('#leaveForm').on('submit', function(e) {
-                e.preventDefault();
-                var userName = $('#user-name').val();
-                var description = $('#leave-description').val();
-                var start = $('#leave-start').val();
-                var end = $('#leave-end').val();
-                var eventData = {
-                    title: userName + "'s Leave",
-                    start: start,
-                    end: end,
-                    description: description,
-                    color: '#ff9f89' // Custom color for each event
-                };
-                $('#calendar').fullCalendar('renderEvent', eventData, true); // stick the event
-                $('#leaveModal').modal('hide');
+    e.preventDefault();
+    var userName = $('#user-name').val();
+    var description = $('#leave-description').val();
+    var start = $('#leave-start').val();
+    var end = $('#leave-end').val();
+    var eventData = {
+        title: userName + "'s Leave",
+        start: start,
+        end: end,
+        description: description,
+        color: '#ff9f89' // Custom color for each event
+    };
+
+    // Envoyer les données au serveur via AJAX
+    $.ajax({
+        url: '/path/to/your/server/endpoint', // Remplacer par l'URL de votre API
+        method: 'POST',
+        data: eventData,
+        success: function() {
+            $('#calendar').fullCalendar('renderEvent', eventData, true); // stick the event
+            $('#leaveModal').modal('hide');
+        },
+        error: function() {
+            alert('Erreur lors de l\'enregistrement de l\'événement');
+        }
+    });
+});
+
             });
         });
     </script>
