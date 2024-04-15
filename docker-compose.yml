@@ -1,22 +1,32 @@
-version: '3'
+version: '3.8'
 services:
   web:
-    build: ./app
+    build:
+      context: .
+      dockerfile: .dockerfile
     ports:
       - "5000:5000"
     depends_on:
       - db
-  db:
-    image: mariadb
     environment:
-      MYSQL_ROOT_PASSWORD: example
-      MYSQL_DATABASE: users
-      MYSQL_USER: user
-      MYSQL_PASSWORD: password
+      - DATABASE_HOST=db
+      - DATABASE_USER=myuser
+      - DATABASE_PASSWORD=mypassword
+      - DATABASE_NAME=user_auth
+
+  db:
+    build:
+      context: ./db
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=user_auth
+      - MYSQL_USER=myuser
+      - MYSQL_PASSWORD=mypassword
     ports:
       - "3306:3306"
     volumes:
       - db_data:/var/lib/mysql
+      - ./db/database.sql:/docker-entrypoint-initdb.d/init.sql  # Initializes the database
 
 volumes:
-  db_data:
+  db_data:  # Persistent volume for MariaDB data
