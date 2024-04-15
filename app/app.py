@@ -1,5 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for, session
-from event_calendar.forms import EventForm  # Adjusted import
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+
+# Import your data models here, for example
+# from yourapp.models import Event
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key'
@@ -20,11 +22,18 @@ def login():
         session['logged_in'] = True
         return redirect(url_for('home'))
     return render_template('auth/login.html')
+
 @app.route('/get-events', methods=['GET'])
 def get_events():
-    # Assuming you have a model to fetch events
-    events = []  # Replace with your method of fetching events
-    return jsonify(events)
+    # Here you should fetch your event data
+    # For example, you might do something like:
+    # events = Event.query.all()
+    # Then convert it to the format FullCalendar expects:
+    event_list = [
+        {'title': 'Alice - Leave', 'start': '2024-04-15', 'end': '2024-04-18'},
+        {'title': 'Bob - Leave', 'start': '2024-04-20', 'end': '2024-04-22'}
+    ]
+    return jsonify(event_list)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
