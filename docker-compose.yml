@@ -14,8 +14,7 @@ services:
       - DATABASE_NAME=user_auth
 
   db:
-    build:
-      context: ./db
+    image: mariadb:latest
     environment:
       - MYSQL_ROOT_PASSWORD=rootpassword
       - MYSQL_DATABASE=user_auth
