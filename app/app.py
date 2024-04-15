@@ -17,7 +17,8 @@ def get_db_connection():
 
 @app.route('/')
 def index():
-    return render_template('login.html')
+    # Notez le chemin mis à jour ici pour le template
+    return render_template('auth/login.html')
 
 @app.route('/login', methods=['POST'])
 def login():
