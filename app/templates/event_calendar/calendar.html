@@ -65,6 +65,14 @@
                 <form id="leaveForm">
                     <div class="modal-body">
                         <div class="form-group">
+                            <label for="user-name">User Name</label>
+                            <input type="text" class="form-control" id="user-name" name="userName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="leave-description">Description</label>
+                            <textarea class="form-control" id="leave-description" name="description" required></textarea>
+                        </div>
+                        <div class="form-group">
                             <label for="leave-start">Start Date</label>
                             <input type="date" class="form-control" id="leave-start" name="start" required>
                         </div>
@@ -94,21 +102,28 @@
                 selectable: true,
                 selectHelper: true,
                 select: function(start, end) {
+                    $('#leaveModal').modal('show');
                     $('#leave-start').val(start.format('YYYY-MM-DD'));
                     $('#leave-end').val(end.format('YYYY-MM-DD'));
-                    $('#leaveModal').modal('show');
                     $('#calendar').fullCalendar('unselect');
                 },
-                eventLimit: true // for all non-TimeGrid views
+                eventClick: function(calEvent, jsEvent, view) {
+                    alert('Event: ' + calEvent.title + '\nDescription: ' + calEvent.description);
+                },
+                eventLimit: true // for all non-agenda views
             });
 
             $('#leaveForm').on('submit', function(e) {
                 e.preventDefault();
-                var formData = $(this).serializeArray();
+                var userName = $('#user-name').val();
+                var description = $('#leave-description').val();
+                var start = $('#leave-start').val();
+                var end = $('#leave-end').val();
                 var eventData = {
-                    title: 'Leave', // Default title for the event
-                    start: formData[0].value,
-                    end: formData[1].value
+                    title: userName + "'s Leave",
+                    start: start,
+                    end: end,
+                    description: description  // Store description in event object
                 };
                 $('#calendar').fullCalendar('renderEvent', eventData, true); // stick the event
                 $('#leaveModal').modal('hide');
