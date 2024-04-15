@@ -2,14 +2,15 @@
 CREATE DATABASE IF NOT EXISTS user_auth;
 USE user_auth;
 
--- Create a 'users' table
-CREATE TABLE IF NOT EXISTS users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(255) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
-    email VARCHAR(255) UNIQUE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+CREATE TABLE utilisateurs (
+    id SERIAL PRIMARY KEY,
+    type VARCHAR(255) NOT NULL,
+    mot_de_passe VARCHAR(255) NOT NULL
 );
 
--- Optionally, insert a test user (password should be hashed in a real scenario)
-INSERT INTO users (username, password_hash, email) VALUES ('testuser', 'testhash', 'test@example.com');
+INSERT INTO utilisateurs (type, mot_de_passe) VALUES ('fer5rfr', 'password123');
+INSERT INTO utilisateurs (type, mot_de_passe) VALUES ('fer5rfr', 'password123');
+INSERT INTO utilisateurs (type, mot_de_passe) VALUES ('fer5rfr', 'password123');
+INSERT INTO utilisateurs (type, mot_de_passe) VALUES ('fer5rfr', 'password123');
+INSERT INTO utilisateurs (type, mot_de_passe) VALUES ('fer5rfr', 'password123');
+
