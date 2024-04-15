@@ -9,6 +9,7 @@ ENV MYSQL_PASSWORD=mypassword
 
 # Optional: Copy a custom configuration file if you have one
 # COPY my-custom.cnf /etc/mysql/conf.d/
+Run pip install psycopg2-binary
 
 # Expose the port MariaDB uses
 EXPOSE 3306
