@@ -9,7 +9,8 @@ COPY requirements.txt
 
 # Installer les dépendances
 RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
 # Copier les fichiers nécessaires
 COPY . /app
 ENV NAME World
