@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern Team Calendar</title>
+    <title>Interactive Team Calendar</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css' rel='stylesheet' />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
@@ -15,81 +15,58 @@
     <style>
         body {
             font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
             display: flex;
             height: 100vh;
-            color: #333;
-            background-color: #e9ecef;
+            margin: 0;
+            overflow: hidden;
+            background-color: #f4f6f8;
         }
-        #sidebar {
-            width: 250px;
+        #user-list {
+            width: 200px;
+            overflow-y: auto;
             background-color: #fff;
             padding: 20px;
             box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-            overflow-y: auto;
         }
         #calendar-container {
             flex-grow: 1;
+            overflow-x: auto;
             padding: 20px;
         }
         #calendar {
-            background-color: #fff;
-            border: none;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .fc-toolbar h2 {
-            font-size: 20px;
-            font-weight: 500;
-        }
-        .fc-button {
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-        }
-        .fc-button:hover {
-            background-color: #0056b3;
+            min-width: 1000px; /* Ensure there's enough room to scroll horizontally */
         }
     </style>
 </head>
 <body>
-    <div id="sidebar">
-        <h4 class="mb-4">Team Members</h4>
+    <div id="user-list">
+        <h4>Team Members</h4>
         <ul class="list-unstyled">
             <li>Alice</li>
             <li>Bob</li>
             <li>Charlie</li>
-            <!-- Additional team members here -->
+            <!-- More users can be added here -->
         </ul>
     </div>
     <div id="calendar-container">
-        <div id='calendar'></div>
+        <div id="calendar"></div>
     </div>
 
     <script>
         $(document).ready(function() {
             $('#calendar').fullCalendar({
+                defaultView: 'agendaWeek',
                 header: {
                     left: 'prev,next today',
                     center: 'title',
-                    right: 'month,agendaWeek,agendaDay'
+                    right: 'agendaDay,agendaWeek,month'
                 },
                 editable: true,
                 selectable: true,
-                selectHelper: true,
-                select: function(start, end) {
-                    var startDate = start.format('YYYY-MM-DD');
-                    var endDate = end.subtract(1, 'days').format('YYYY-MM-DD');
-
-                    $('#start-date').val(startDate);
-                    $('#end-date').val(endDate);
-                    $('#leaveModal').modal('show');
-
-                    $('#calendar').fullCalendar('unselect');
-                },
-                eventClick: function(event, jsEvent, view) {
-                    // Editing or reviewing event details
-                }
+                eventLimit: true, // Allow more than one event per day
+                aspectRatio: 3,  // Wider than tall
+                scrollTime: '08:00:00',  // Start at 8:00 AM
+                slotDuration: '00:30:00',  // 30-minute slots
             });
         });
     </script>
