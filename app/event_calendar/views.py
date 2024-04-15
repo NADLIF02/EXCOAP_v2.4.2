@@ -1,13 +1,9 @@
-# auth/views.py
-from flask import Blueprint, render_template, request, redirect, url_for, session, flash
-from .forms import LoginForm
+from flask import Blueprint, render_template, session, redirect, url_for
 
-auth = Blueprint('auth', __name__, url_prefix='/auth')
+calendar = Blueprint('calendar', __name__, url_prefix='/calendar')
 
-@auth.route('/login', methods=['GET', 'POST'])
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        # Logic here for authentication
-        return redirect(url_for('calendar.display'))
-    return render_template('auth/login.html', form=form)
+@calendar.route('/')
+def display():
+    if not session.get('logged_in'):
+        return redirect(url_for('auth.login'))
+    return render_template('event_calendar/calendar.html')
