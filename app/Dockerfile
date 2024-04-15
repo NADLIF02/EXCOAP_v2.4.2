@@ -13,6 +13,7 @@ RUN pip install --upgrade pip
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install psycopg2-binary
+RUN pip install Flask flask-bcrypt psycopg2-binary
 
 # Make port 5000 available to the world outside this container
 EXPOSE 5000
