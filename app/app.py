@@ -20,6 +20,11 @@ def login():
         session['logged_in'] = True
         return redirect(url_for('home'))
     return render_template('auth/login.html')
+@app.route('/get-events', methods=['GET'])
+def get_events():
+    # Assuming you have a model to fetch events
+    events = []  # Replace with your method of fetching events
+    return jsonify(events)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', debug=True)
