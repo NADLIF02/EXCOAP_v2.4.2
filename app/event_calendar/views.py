@@ -1,20 +1,13 @@
-from flask import Blueprint, render_template, request, redirect, url_for, flash, session
-from datetime import datetime
-from .forms import EventForm  # Import correct du formulaire
+# auth/views.py
+from flask import Blueprint, render_template, request, redirect, url_for, session, flash
+from .forms import LoginForm
 
-calendar = Blueprint('calendar', __name__)
+auth = Blueprint('auth', __name__, url_prefix='/auth')
 
-@calendar.route('/', methods=['GET', 'POST'])
-def display():
-    if not session.get('logged_in'):
-        return redirect(url_for('auth.login'))
-    form = EventForm()
+@auth.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
     if form.validate_on_submit():
-        event_date = form.event_date.data
-        description = form.description.data
-        # Ajouter l'événement dans la base de données
-        flash('Event added successfully!', 'success')
-        return redirect(url_for('.display'))
-    # Récupérer les événements de la base de données pour les afficher
-    events = [{'date': datetime.today(), 'description': 'Sample Event'}]  # Remplacer par des données réelles
-    return render_template('event_calendar/calendar.html', form=form, events=events)
+        # Logic here for authentication
+        return redirect(url_for('calendar.display'))
+    return render_template('auth/login.html', form=form)
