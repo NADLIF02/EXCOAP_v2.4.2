@@ -10,10 +10,10 @@ COPY requirements.txt .
 # Installer les dépendances
 RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
-
+RUN pip install --trusted-host pypi.python.org 
 # Copier les fichiers nécessaires
 COPY . /app
-
+ENV NAME World
 # Exposer le port sur lequel l'application va tourner
 EXPOSE 5000
 
