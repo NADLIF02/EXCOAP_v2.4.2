@@ -22,7 +22,7 @@
             background-color: #f4f6f8;
         }
         #user-list {
-            flex: 0 0 200px; /* Fixed width */
+            flex: 0 0 200px;
             overflow-y: auto;
             background-color: #fff;
             padding: 20px;
@@ -30,11 +30,14 @@
         }
         #calendar-container {
             flex-grow: 1;
-            overflow-x: hidden; /* Changed to hide horizontal overflow */
+            overflow-x: hidden;
             padding: 20px;
         }
         #calendar {
-            width: 100%; /* Fill the container */
+            width: 100%;
+        }
+        .fc-event, .fc-event-dot {
+            background-color: #ff9f89; /* Example color for leave events */
         }
     </style>
 </head>
@@ -52,7 +55,6 @@
         <div id='calendar'></div>
     </div>
 
-    <!-- Modal for submitting leave requests -->
     <div class="modal fade" id="leaveModal" tabindex="-1" role="dialog" aria-labelledby="leaveModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -108,7 +110,7 @@
                     $('#calendar').fullCalendar('unselect');
                 },
                 eventClick: function(calEvent, jsEvent, view) {
-                    alert('Event: ' + calEvent.title + '\nDescription: ' + calEvent.description);
+                    alert('Event: ' + calEvent.title + '\nStart: ' + moment(calEvent.start).format('YYYY-MM-DD') + '\nEnd: ' + moment(calEvent.end).format('YYYY-MM-DD') + '\nDescription: ' + calEvent.description);
                 },
                 eventLimit: true // for all non-TimeGrid views
             });
@@ -123,7 +125,8 @@
                     title: userName + "'s Leave",
                     start: start,
                     end: end,
-                    description: description  // Store description in event object
+                    description: description,
+                    color: '#ff9f89' // Custom color for each event
                 };
                 $('#calendar').fullCalendar('renderEvent', eventData, true); // stick the event
                 $('#leaveModal').modal('hide');
