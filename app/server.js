@@ -2,7 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 
 const app = express();
-const PORT = 5000;
+const PORT = 3001;
 
 // Middleware to parse JSON and urlencoded form data
 app.use(bodyParser.json());
