@@ -24,21 +24,19 @@ def get_db_connection():
 def index():
     return render_template('auth/login.html')
 
-@app.route('/login', methods=['POST'])
+@@app.route('/login', methods=['POST'])
 def login():
     username = request.form['username']
     password = request.form['password']
     conn = get_db_connection()
-    user_record = None  # Initialise user_record avant toute opération
-    
     if not conn:
         flash('Database connection error.', 'error')
         return redirect(url_for('index'))
-    
+
     try:
         with conn.cursor(dictionary=True) as cur:
             cur.execute("SELECT mot_de_passe FROM utilisateurs WHERE nom_utilisateur = %s", (username,))
-            user_record = cur.fetchone()  # This will be None if no user is found
+            user_record = cur.fetchone()
     except Error as e:
         flash('An error occurred while fetching user data.', 'error')
         print("Query failed: ", str(e))
@@ -46,12 +44,18 @@ def login():
         if conn.is_connected():
             conn.close()
 
-    if user_record and bcrypt.check_password_hash(user_record['mot_de_passe'], password):
-        session['user_id'] = username  # Setting session after successful login
-        return redirect(url_for('calendar'))  # Redirect to the calendar page
+    if user_record:
+        stored_password = user_record['mot_de_passe']
+        if bcrypt.check_password_hash(stored_password, password):
+            session['user_id'] = username
+            return redirect(url_for('calendar'))
+        else:
+            flash('Invalid username or password', 'error')
     else:
-        flash('Nom d\'utilisateur ou mot de passe incorrect.', 'error')
-        return redirect(url_for('index'))
+        flash('Invalid username or password', 'error')
+
+    return redirect(url_for('index'))
+
 
 @app.route('/calendar')
 def calendar():
