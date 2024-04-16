@@ -1,6 +1,42 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+     <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+        background-color: #f4f4f4;
+    }
+    form {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    label {
+        display: block;
+        margin-bottom: 5px;
+    }
+    input, select {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+    }
+    button {
+        background-color: #0056b3;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+    button:hover {
+        background-color: #004494;
+    }
+</style>
+
      <meta charset="UTF-8">
     <title>Gestion des absences</title>
     <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css' rel='stylesheet' />
@@ -8,54 +44,70 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js'></script>
    <script>
+<script>
 $(document).ready(function() {
-    $('#calendar').fullCalendar({
+    var calendar = $('#calendar').fullCalendar({
         header: {
             left: 'prev,next today',
             center: 'title',
-            right: 'month,agendaWeek,agendaDay'
+            right: 'month,agendaWeek,agendaDay,listWeek'
         },
         editable: true,
-        events: function(start, end, timezone, callback) {
-            $.ajax({
-                url: '/get_absences',
-                dataType: 'json',
-                success: function(response) {
-                    var events = [];
-                    $(response).each(function() {
-                        events.push({
-                            title: this.type,
-                            start: this.date_debut, // assurez-vous que les dates sont au format ISO8601
-                            end: this.date_fin,  // ajoutez la date de fin
-                            allDay: true
-                        });
-                    });
-                    callback(events);
-                }
+        navLinks: true, // can click day/week names to navigate views
+        eventLimit: true, // allow "more" link when too many events
+        events: '/get_absences',
+        eventRender: function(event, element) {
+            element.popover({
+                title: event.title,
+                content: 'Début: ' + moment(event.start).format('DD/MM/YYYY') +
+                         '<br>Fin: ' + moment(event.end).format('DD/MM/YYYY'),
+                trigger: 'hover',
+                placement: 'top',
+                container: 'body'
             });
+        },
+        dayClick: function(date, jsEvent, view) {
+            // You can make a function to prompt for adding an event on clicked date
+            console.log('Clicked on: ' + date.format());
         }
     });
 });
+</script>
 
 </script>
+     
 </head>
 <body>
 <body>
-      <form action="/add_conge" method="post">
-    <label for="type">Type de congé:</label>
-    <select name="type" id="type">
-        <option value="Congé payé">Congé payé</option>
-        <option value="Congé maladie">Congé maladie</option>
-    </select>
-    <label for="date_debut">Date de début:</label>
-    <input type="date" id="date_debut" name="date_debut" required>
-    <label for="date_fin">Date de fin:</label>
-    <input type="date" id="date_fin" name="date_fin" required>
-    <button type="submit">Soumettre le congé</button>
+     <form action="/add_conge" method="post">
+        <label for="type">Type de congé:</label>
+        <select name="type" id="type">
+            <option value="Congé payé">Congé payé</option>
+            <option value="Congé maladie">Congé maladie</option>
+        </select>
+        <label for="date_debut">Date de début:</label>
+        <input type="date" id="date_debut" name="date_debut" required>
+        <label for="date_fin">Date de fin:</label>
+        <input type="date" id="date_fin" name="date_fin" required>
+        <button type="submit">Soumettre le congé</button>
+    </form>
 </form>
 
     <div id='calendar'></div>
 </form>
-
+ <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const form = document.querySelector("form");
+        form.addEventListener("submit", function(event) {
+            const startDate = new Date(document.getElementById("date_debut").value);
+            const endDate = new Date(document.getElementById("date_fin").value);
+            if (endDate < startDate) {
+                alert("La date de fin doit être postérieure à la date de début.");
+                event.preventDefault(); // Empêcher la soumission du formulaire
+            }
+        });
+    });
+    </script>
 </body>
+     
 </html>
