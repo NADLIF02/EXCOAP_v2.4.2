@@ -63,10 +63,7 @@ def fetch_absences_from_db():
 def get_absences():
     absences = fetch_absences_from_db()
     return jsonify(absences)
-
-if __name__ == "__main__":
-    app.run(debug=True)
-
+    
 @app.route('/calendar')
 def calendar():
     if 'user_id' not in session:
