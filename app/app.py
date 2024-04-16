@@ -1,7 +1,7 @@
 from flask import Flask, request, render_template, redirect, url_for, flash, session
 from flask_bcrypt import Bcrypt
-import psycopg2
-import psycopg2.extras
+import mysql.connector
+from mysql.connector import Error
 
 app = Flask(__name__)
 app.secret_key = 'votre_cle_secrete_ici'
@@ -9,8 +9,14 @@ bcrypt = Bcrypt(app)
 
 def get_db_connection():
     try:
-        return psycopg2.connect("dbname=nom_de_votre_base_de_donnees user=utilisateur password=mot_de_passe")
-    except psycopg2.Error as e:
+        conn = mysql.connector.connect(
+            host='db',  # Le nom de service du conteneur de base de données dans docker-compose
+            user='myuser',
+            password='mypassword',
+            database='user_auth'
+        )
+        return conn
+    except Error as e:
         print("Unable to connect to the database: ", str(e))
         return None
 
@@ -28,14 +34,15 @@ def login():
         return redirect(url_for('index'))
     
     try:
-        with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
+        with conn.cursor(dictionary=True) as cur:
             cur.execute("SELECT mot_de_passe FROM utilisateurs WHERE nom_utilisateur = %s", (username,))
             user_record = cur.fetchone()
-    except psycopg2.Error as e:
+    except Error as e:
         flash('An error occurred while fetching user data.', 'error')
         print("Query failed: ", str(e))
     finally:
-        conn.close()
+        if conn.is_connected():
+            conn.close()
 
     if user_record and bcrypt.check_password_hash(user_record['mot_de_passe'], password):
         session['user_id'] = username  # Setting session after successful login
