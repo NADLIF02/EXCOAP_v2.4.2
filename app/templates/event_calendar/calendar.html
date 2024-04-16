@@ -27,12 +27,10 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
-            width: 100%;
         }
         #calendar {
-            max-width: 1000px;
-            width: 100%;
-            margin: 0 auto;
+            width: 80%;
+            max-width: 900px; /* Ajustez cette largeur selon vos besoins */
         }
         .fc-event, .fc-event-dot {
             background-color: #ff9f89; /* Couleur pour les événements de congés */
@@ -85,7 +83,6 @@
                     center: 'title',
                     right: 'month,agendaWeek,agendaDay'
                 },
-                defaultView: 'month',
                 editable: true,
                 selectable: true,
                 selectHelper: true,
@@ -98,8 +95,7 @@
                 eventClick: function(calEvent, jsEvent, view) {
                     alert('Événement : ' + calEvent.title + '\nDébut : ' + moment(calEvent.start).format('YYYY-MM-DD') + '\nFin : ' + moment(calEvent.end).format('YYYY-MM-DD') + '\nDescription : ' + calEvent.description);
                 },
-                eventLimit: true,
-                events: '/api/leave_events' // URL pour charger les événements. Vous devez ajuster cela à votre endpoint API correct.
+                eventLimit: true
             });
 
             $('#leaveForm').on('submit', function(e) {
@@ -115,18 +111,16 @@
                     color: '#ff9f89' // Couleur personnalisée pour chaque événement
                 };
 
-                // Envoyer les données au serveur via AJAX
                 $.ajax({
-                    url: '/api/leave_events',  // Assurez-vous que cette URL est correcte pour votre API
+                    url: '/path/to/your/server/endpoint', // Remplacer par l'URL de votre API
                     method: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(eventData),
-                    success: function(response) {
-                        $('#calendar').fullCalendar('renderEvent', eventData, true); // stick the event
+                    data: eventData,
+                    success: function() {
+                        $('#calendar').fullCalendar('renderEvent', eventData, true);
                         $('#leaveModal').modal('hide');
                     },
                     error: function() {
-                        alert('Erreur lors de l'enregistrement de l'événement');
+                        alert('Erreur lors de l\'enregistrement de l\'événement');
                     }
                 });
             });
