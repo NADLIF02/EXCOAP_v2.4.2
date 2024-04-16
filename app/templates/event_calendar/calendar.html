@@ -25,7 +25,8 @@ $(document).ready(function() {
                     $(response).each(function() {
                         events.push({
                             title: this.type,
-                            start: this.date, // assurez-vous que les dates sont au format ISO8601
+                            start: this.date_debut, // assurez-vous que les dates sont au format ISO8601
+                            end: this.date_fin,  // ajoutez la date de fin
                             allDay: true
                         });
                     });
@@ -35,6 +36,7 @@ $(document).ready(function() {
         }
     });
 });
+
 </script>
 </head>
 <body>
