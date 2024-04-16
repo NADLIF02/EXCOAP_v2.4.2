@@ -29,6 +29,8 @@ def login():
     username = request.form['username']
     password = request.form['password']
     conn = get_db_connection()
+    user_record = None  # Initialise user_record avant toute opération
+    
     if not conn:
         flash('Database connection error.', 'error')
         return redirect(url_for('index'))
@@ -36,7 +38,7 @@ def login():
     try:
         with conn.cursor(dictionary=True) as cur:
             cur.execute("SELECT mot_de_passe FROM utilisateurs WHERE nom_utilisateur = %s", (username,))
-            user_record = cur.fetchone()
+            user_record = cur.fetchone()  # This will be None if no user is found
     except Error as e:
         flash('An error occurred while fetching user data.', 'error')
         print("Query failed: ", str(e))
