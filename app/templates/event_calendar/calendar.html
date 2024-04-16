@@ -39,17 +39,20 @@ $(document).ready(function() {
 </head>
 <body>
 <body>
-    <div id='calendar'></div>
-     <form action="/add_conge" method="post">
+      <form action="/add_conge" method="post">
     <label for="type">Type de congé:</label>
     <select name="type" id="type">
         <option value="Congé payé">Congé payé</option>
         <option value="Congé maladie">Congé maladie</option>
-        <!-- Ajoutez d'autres types de congés si nécessaire -->
     </select>
-    <label for="date">Date:</label>
-    <input type="date" id="date" name="date" required>
+    <label for="date_debut">Date de début:</label>
+    <input type="date" id="date_debut" name="date_debut" required>
+    <label for="date_fin">Date de fin:</label>
+    <input type="date" id="date_fin" name="date_fin" required>
     <button type="submit">Soumettre le congé</button>
+</form>
+
+    <div id='calendar'></div>
 </form>
 
 </body>
