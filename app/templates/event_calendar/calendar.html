@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Team Calendar</title>
+    <title>Calendrier d'équipe interactif</title>
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css' rel='stylesheet' />
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
@@ -21,36 +21,23 @@
             overflow: hidden;
             background-color: #f4f6f8;
         }
-        #user-list {
-            flex: 0 0 200px;
-            overflow-y: auto;
-            background-color: #fff;
-            padding: 20px;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-        }
         #calendar-container {
             flex-grow: 1;
-            overflow-x: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             padding: 20px;
         }
         #calendar {
-            width: 100%;
+            width: 80%;
+            max-width: 900px; /* Ajustez cette largeur selon vos besoins */
         }
         .fc-event, .fc-event-dot {
-            background-color: #ff9f89; /* Example color for leave events */
+            background-color: #ff9f89; /* Couleur pour les événements de congés */
         }
     </style>
 </head>
 <body>
-    <div id="user-list">
-        <h4>Team Members</h4>
-        <ul class="list-unstyled">
-            <li>Alice</li>
-            <li>Bob</li>
-            <li>Charlie</li>
-            <!-- More users can be added here -->
-        </ul>
-    </div>
     <div id="calendar-container">
         <div id='calendar'></div>
     </div>
@@ -59,7 +46,7 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="leaveModalLabel">Submit Leave Request</h5>
+                    <h5 class="modal-title" id="leaveModalLabel">Demander un congé</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -67,30 +54,21 @@
                 <form id="leaveForm">
                     <div class="modal-body">
                         <div class="form-group">
-                            <label for="user-name">User Name</label>
-                            <select class="form-control" id="user-name" name="userName" required>
-                                <option value="Alice">Alice</option>
-                                <option value="Bob">Bob</option>
-                                <option value="Charlie">Charlie</option>
-                                <!-- More users can be added here -->
-                            </select>
-                        </div>
-                        <div class="form-group">
                             <label for="leave-description">Description</label>
                             <textarea class="form-control" id="leave-description" name="description" required></textarea>
                         </div>
                         <div class="form-group">
-                            <label for="leave-start">Start Date</label>
+                            <label for="leave-start">Date de début</label>
                             <input type="date" class="form-control" id="leave-start" name="start" required>
                         </div>
                         <div class="form-group">
-                            <label for="leave-end">End Date</label>
+                            <label for="leave-end">Date de fin</label>
                             <input type="date" class="form-control" id="leave-end" name="end" required>
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Submit Request</button>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Fermer</button>
+                        <button type="submit" class="btn btn-primary">Envoyer la demande</button>
                     </div>
                 </form>
             </div>
@@ -115,40 +93,36 @@
                     $('#calendar').fullCalendar('unselect');
                 },
                 eventClick: function(calEvent, jsEvent, view) {
-                    alert('Event: ' + calEvent.title + '\nStart: ' + moment(calEvent.start).format('YYYY-MM-DD') + '\nEnd: ' + moment(calEvent.end).format('YYYY-MM-DD') + '\nDescription: ' + calEvent.description);
+                    alert('Événement : ' + calEvent.title + '\nDébut : ' + moment(calEvent.start).format('YYYY-MM-DD') + '\nFin : ' + moment(calEvent.end).format('YYYY-MM-DD') + '\nDescription : ' + calEvent.description);
                 },
-                eventLimit: true // for all non-TimeGrid views
+                eventLimit: true
             });
 
             $('#leaveForm').on('submit', function(e) {
-    e.preventDefault();
-    var userName = $('#user-name').val();
-    var description = $('#leave-description').val();
-    var start = $('#leave-start').val();
-    var end = $('#leave-end').val();
-    var eventData = {
-        title: userName + "'s Leave",
-        start: start,
-        end: end,
-        description: description,
-        color: '#ff9f89' // Custom color for each event
-    };
+                e.preventDefault();
+                var description = $('#leave-description').val();
+                var start = $('#leave-start').val();
+                var end = $('#leave-end').val();
+                var eventData = {
+                    title: 'Congé',
+                    start: start,
+                    end: end,
+                    description: description,
+                    color: '#ff9f89' // Couleur personnalisée pour chaque événement
+                };
 
-    // Envoyer les données au serveur via AJAX
-    $.ajax({
-        url: '/path/to/your/server/endpoint', // Remplacer par l'URL de votre API
-        method: 'POST',
-        data: eventData,
-        success: function() {
-            $('#calendar').fullCalendar('renderEvent', eventData, true); // stick the event
-            $('#leaveModal').modal('hide');
-        },
-        error: function() {
-            alert('Erreur lors de l\'enregistrement de l\'événement');
-        }
-    });
-});
-
+                $.ajax({
+                    url: '/path/to/your/server/endpoint', // Remplacer par l'URL de votre API
+                    method: 'POST',
+                    data: eventData,
+                    success: function() {
+                        $('#calendar').fullCalendar('renderEvent', eventData, true);
+                        $('#leaveModal').modal('hide');
+                    },
+                    error: function() {
+                        alert('Erreur lors de l\'enregistrement de l\'événement');
+                    }
+                });
             });
         });
     </script>
