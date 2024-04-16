@@ -89,7 +89,7 @@ def get_absences():
     if conn is not None:
         try:
             with conn.cursor(dictionary=True) as cursor:
-                cursor.execute("SELECT type, date FROM conges WHERE username=%s", (session['user_id'],))
+                cursor.execute("SELECT type AS title, date_debut AS start, date_fin AS end FROM conges WHERE username=%s", (session['user_id'],))
                 absences = cursor.fetchall()
             return jsonify(absences)
         except Error as e:
@@ -99,6 +99,7 @@ def get_absences():
             if conn.is_connected():
                 conn.close()
     return jsonify([])
+
 
     
 @app.route('/calendar')
