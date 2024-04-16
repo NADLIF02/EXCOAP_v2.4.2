@@ -1,11 +1,9 @@
 from flask import Flask, request, render_template, redirect, url_for, flash, session
-from flask_bcrypt import Bcrypt
 import mysql.connector
 from mysql.connector import Error
 
 app = Flask(__name__)
 app.secret_key = 'votre_cle_secrete_ici'
-bcrypt = Bcrypt(app)
 
 def get_db_connection():
     try:
@@ -21,7 +19,6 @@ def get_db_connection():
         print("Unable to connect to the database:", str(e))
         return None
 
-
 @app.route('/')
 def index():
     return render_template('auth/login.html')
@@ -31,7 +28,7 @@ def login():
     username = request.form['username']
     password = request.form['password']
     conn = get_db_connection()
-    user_record = None  # Initialiser user_record à None pour éviter UnboundLocalError
+    user_record = None
 
     if not conn:
         flash('Database connection error.', 'error')
@@ -40,7 +37,7 @@ def login():
     try:
         with conn.cursor(dictionary=True) as cur:
             cur.execute("SELECT mot_de_passe FROM utilisateurs WHERE nom_utilisateur = %s", (username,))
-            user_record = cur.fetchone()  # user_record sera None si aucun utilisateur n'est trouvé
+            user_record = cur.fetchone()
     except Error as e:
         flash('An error occurred while fetching user data.', 'error')
         print("Query failed: ", str(e))
@@ -48,8 +45,7 @@ def login():
         if conn.is_connected():
             conn.close()
 
-    # Vérifier si user_record n'est pas None et ensuite vérifier le mot de passe
-    if user_record and bcrypt.check_password_hash(user_record['mot_de_passe'], password):
+    if user_record and user_record['mot_de_passe'] == password:
         session['user_id'] = username  # Setting session after successful login
         return redirect(url_for('calendar'))  # Redirect to the calendar page
     else:
