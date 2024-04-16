@@ -34,14 +34,15 @@ def login():
         return redirect(url_for('index'))
     
     try:
-        with conn.cursor(cursor_factory=psycopg2.extras.DictCursor) as cur:
+        with conn.cursor(dictionary=True) as cur:
             cur.execute("SELECT mot_de_passe FROM utilisateurs WHERE nom_utilisateur = %s", (username,))
             user_record = cur.fetchone()
-    except psycopg2.Error as e:
+    except Error as e:
         flash('An error occurred while fetching user data.', 'error')
         print("Query failed: ", str(e))
     finally:
-        conn.close()
+        if conn.is_connected():
+            conn.close()
 
     if user_record and bcrypt.check_password_hash(user_record['mot_de_passe'], password):
         session['user_id'] = username  # Setting session after successful login
