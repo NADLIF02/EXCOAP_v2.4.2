@@ -1,93 +1,88 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Gestion des absences</title>
-    <link href='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.css' rel='stylesheet' />
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js'></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js'></script>
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js'></script>
-    
-    <style>
-         form {
-        display: none;
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            background-color: #f4f4f4;
-        }
-        form {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        label, input, select, button {
-            display: block;
-            width: 100%;
-            margin-bottom: 10px;
-        }
-        input, select {
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button {
-            background-color: #0056b3;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #004494;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leave Management System with Calendar</title>
+    <link href='https://unpkg.com/fullcalendar@5/main.min.css' rel='stylesheet' />
+    <script src='https://unpkg.com/fullcalendar@5/main.min.js'></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                events: [
+                    // These events could be fetched dynamically in a real application
+                    { title: 'Vacation', start: '2024-05-01', end: '2024-05-05' },
+                    { title: 'Sick Leave', start: '2024-05-10', end: '2024-05-11' }
+                ]
+            });
+            calendar.render();
+        });
+    </script>
 </head>
 <body>
-    
+    <h1>Leave Management System</h1>
+
+    <!-- Calendar Display -->
     <div id='calendar'></div>
 
-    <h1>Gestion des Congés</h1>
-    <form id="form" action="/add_conge" method="post">
-    <label for="type">Type de congé:</label>
-    <select name="type" id="type">
-        <option value="Congé payé">Congé payé</option>
-        <option value="Congé maladie">Congé maladie</option>
-    </select>
-    <label for="date_debut">Date de début:</label>
-    <input type="date" id="date_debut" name="date_debut" required>
-    <label for="date_fin">Date de fin:</label>
-    <input type="date" id="date_fin" name="date_fin" required>
-    <button type="submit">Soumettre le congé</button>
-</form>
+    <!-- Employee Leave Request Form -->
+    <section>
+        <h2>Request Leave</h2>
+        <form action="/submit-leave-request" method="POST">
+            <label for="employee-name">Name:</label>
+            <input type="text" id="employee-name" name="employee-name" required><br><br>
 
-   <script>
-$(document).ready(function() {
-    var calendarEl = document.getElementById('calendar');
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-        plugins: ['dayGrid', 'interaction', 'timeGrid', 'list'],
-        headerToolbar: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-        },
-        navLinks: true,
-        editable: true,
-        dayMaxEvents: true,
-        events: '/get_absences',  // Assurez-vous que cela fonctionne comme prévu
-        dateClick: function(info) {
-            // Affiche le formulaire lorsque l'utilisateur clique sur une date
-            $('#form').show();  // Assurez-vous que l'ID de votre formulaire est 'form'
-            $('#date_debut').val(info.dateStr); // Remplit la date de début
-            $('#date_fin').val(info.dateStr);   // Remplit la date de fin
-        }
-    });
+            <label for="leave-type">Type of Leave:</label>
+            <select id="leave-type" name="leave-type">
+                <option value="vacation">Vacation</option>
+                <option value="sick">Sick Leave</option>
+                <option value="personal">Personal Day</option>
+            </select><br><br>
 
-    calendar.render();
-});
-</script>
+            <label for="start-date">Start Date:</label>
+            <input type="date" id="start-date" name="start-date" required><br><br>
+
+            <label for="end-date">End Date:</label>
+            <input type="date" id="end-date" name="end-date" required><br><br>
+
+            <label for="reason">Reason (optional):</label>
+            <textarea id="reason" name="reason"></textarea><br><br>
+
+            <button type="submit">Submit Request</button>
+        </form>
+    </section>
+
+    <!-- Manager Approval Section -->
+    <section>
+        <h2>Approve Leave Requests</h2>
+        <table border="1">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Type of Leave</th>
+                    <th>Start Date</th>
+                    <th>End Date</th>
+                    <th>Reason</th>
+                    <th>Approve</th>
+                    <th>Reject</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- This should be populated dynamically from the server in a real app -->
+                <tr>
+                    <td>John Doe</td>
+                    <td>Vacation</td>
+                    <td>2024-05-01</td>
+                    <td>2024-05-10</td>
+                    <td>Family trip</td>
+                    <td><button>Approve</button></td>
+                    <td><button>Reject</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
 
 </body>
 </html>
