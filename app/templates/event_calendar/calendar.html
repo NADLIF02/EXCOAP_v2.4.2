@@ -40,5 +40,17 @@ $(document).ready(function() {
 <body>
 <body>
     <div id='calendar'></div>
+     <form action="/add_conge" method="post">
+    <label for="type">Type de congé:</label>
+    <select name="type" id="type">
+        <option value="Congé payé">Congé payé</option>
+        <option value="Congé maladie">Congé maladie</option>
+        <!-- Ajoutez d'autres types de congés si nécessaire -->
+    </select>
+    <label for="date">Date:</label>
+    <input type="date" id="date" name="date" required>
+    <button type="submit">Soumettre le congé</button>
+</form>
+
 </body>
 </html>
