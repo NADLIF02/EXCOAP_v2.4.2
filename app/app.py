@@ -64,10 +64,6 @@ def get_absences():
     absences = fetch_absences_from_db()
     return jsonify(absences)
 
-@app.route('/')
-def index():
-    return render_template('event_calendar/calendar.html')
-
 if __name__ == "__main__":
     app.run(debug=True)
 
