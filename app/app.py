@@ -36,7 +36,8 @@ def login():
     
     try:
         with conn.cursor(dictionary=True) as cur:
-            cur.execute("SELECT mot_de_passe FROM utilisateurs WHERE nom_utilisateur = %s", (username,))
+            # Utilisez 'type' au lieu de 'username' pour la requête SQL
+            cur.execute("SELECT mot_de_passe FROM utilisateurs WHERE type = %s", (username,))
             user_record = cur.fetchone()
     except Error as e:
         flash('An error occurred while fetching user data.', 'error')
@@ -51,6 +52,7 @@ def login():
     else:
         flash('Nom d\'utilisateur ou mot de passe incorrect.', 'error')
         return redirect(url_for('index'))
+
 
 @app.route('/calendar')
 def calendar():
