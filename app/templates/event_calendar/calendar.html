@@ -27,10 +27,12 @@
             justify-content: center;
             align-items: center;
             padding: 20px;
+            width: 100%;
         }
         #calendar {
-            width: 80%;
-            max-width: 900px; /* Ajustez cette largeur selon vos besoins */
+            max-width: 1000px;
+            width: 100%;
+            margin: 0 auto;
         }
         .fc-event, .fc-event-dot {
             background-color: #ff9f89; /* Couleur pour les événements de congés */
@@ -95,7 +97,30 @@
                 eventClick: function(calEvent, jsEvent, view) {
                     alert('Événement : ' + calEvent.title + '\nDébut : ' + moment(calEvent.start).format('YYYY-MM-DD') + '\nFin : ' + moment(calEvent.end).format('YYYY-MM-DD') + '\nDescription : ' + calEvent.description);
                 },
-                eventLimit: true
+                eventLimit: true,
+                events: function(start, end, timezone, callback) {
+                    $.ajax({
+                        url: '/path/to/fetch-events',
+                        dataType: 'json',
+                        data: {
+                            start: start.unix(),
+                            end: end.unix()
+                        },
+                        success: function(resp) {
+                            var events = [];
+                            $(resp).each(function() {
+                                events.push({
+                                    title: $(this).attr('title'),
+                                    start: $(this).attr('start'),
+                                    end: $(this).attr('end'),
+                                    description: $(this).attr('description'),
+                                    color: '#ff9f89' // Couleur personnalisée pour les congés
+                                });
+                            });
+                            callback(events);
+                        }
+                    });
+                }
             });
 
             $('#leaveForm').on('submit', function(e) {
