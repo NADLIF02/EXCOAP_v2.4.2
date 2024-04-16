@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, redirect, url_for, flash, session
+from flask import Flask, request, render_template, redirect, url_for, flash, session , jsonify
 import mysql.connector
 from mysql.connector import Error
 
@@ -52,7 +52,24 @@ def login():
     else:
         flash('Nom d\'utilisateur ou mot de passe incorrect.', 'error')
         return redirect(url_for('index'))
+def fetch_absences_from_db():
+    # Cette fonction doit interroger la base de données et retourner les données
+    return [
+        {"id": 1, "type": "Congé payé", "date": "2024-04-20"},
+        {"id": 2, "type": "Congé maladie", "date": "2024-04-22"}
+    ]
 
+@app.route('/get_absences')
+def get_absences():
+    absences = fetch_absences_from_db()
+    return jsonify(absences)
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+if __name__ == "__main__":
+    app.run(debug=True)
 
 @app.route('/calendar')
 def calendar():
