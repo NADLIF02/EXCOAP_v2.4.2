@@ -9,6 +9,8 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js'></script>
     
     <style>
+         form {
+        display: none;
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
@@ -44,60 +46,48 @@
     </style>
 </head>
 <body>
-    <h1>Gestion des Congés</h1>
-    <form action="/add_conge" method="post">
-        <label for="type">Type de congé:</label>
-        <select name="type" id="type">
-            <option value="Congé payé">Congé payé</option>
-            <option value="Congé maladie">Congé maladie</option>
-        </select>
-        <label for="date_debut">Date de début:</label>
-        <input type="date" id="date_debut" name="date_debut" required>
-        <label for="date_fin">Date de fin:</label>
-        <input type="date" id="date_fin" name="date_fin" required>
-        <button type="submit">Soumettre le congé</button>
-    </form>
+    
     <div id='calendar'></div>
 
-    <script>
-        $(document).ready(function() {
-            var calendarEl = document.getElementById('calendar');
-            var calendar = new FullCalendar.Calendar(calendarEl, {
-                plugins: ['dayGrid', 'interaction', 'timeGrid', 'list'],
-                headerToolbar: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
-                },
-                navLinks: true, // can click day/week names to navigate views
-                editable: true,
-                dayMaxEvents: true, // allow "more" link when too many events
-                events: function(fetchInfo, successCallback, failureCallback) {
-                    $.ajax({
-                        url: '/get_absences',
-                        type: 'GET',
-                        dataType: 'json',
-                        success: function(response) {
-                            var events = [];
-                            response.forEach(function(absence) {
-                                events.push({
-                                    title: absence.title,
-                                    start: absence.start,
-                                    end: absence.end
-                                });
-                            });
-                            successCallback(events);
-                        },
-                        error: function() {
-                            alert('There was an error while fetching events!');
-                            failureCallback();
-                        }
-                    });
-                }
-            });
+    <h1>Gestion des Congés</h1>
+    <form id="form" action="/add_conge" method="post">
+    <label for="type">Type de congé:</label>
+    <select name="type" id="type">
+        <option value="Congé payé">Congé payé</option>
+        <option value="Congé maladie">Congé maladie</option>
+    </select>
+    <label for="date_debut">Date de début:</label>
+    <input type="date" id="date_debut" name="date_debut" required>
+    <label for="date_fin">Date de fin:</label>
+    <input type="date" id="date_fin" name="date_fin" required>
+    <button type="submit">Soumettre le congé</button>
+</form>
 
-            calendar.render();
-        });
-    </script>
+   <script>
+$(document).ready(function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        plugins: ['dayGrid', 'interaction', 'timeGrid', 'list'],
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+        },
+        navLinks: true,
+        editable: true,
+        dayMaxEvents: true,
+        events: '/get_absences',  // Assurez-vous que cela fonctionne comme prévu
+        dateClick: function(info) {
+            // Affiche le formulaire lorsque l'utilisateur clique sur une date
+            $('#form').show();  // Assurez-vous que l'ID de votre formulaire est 'form'
+            $('#date_debut').val(info.dateStr); // Remplit la date de début
+            $('#date_fin').val(info.dateStr);   // Remplit la date de fin
+        }
+    });
+
+    calendar.render();
+});
+</script>
+
 </body>
 </html>
