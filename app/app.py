@@ -62,14 +62,15 @@ def fetch_absences_from_db():
 @app.route('/add_conge', methods=['POST'])
 def add_conge():
     type_conge = request.form['type']
-    date_conge = request.form['date']
+    date_debut = request.form['date_debut']
+    date_fin = request.form['date_fin']
     username = session['user_id']  # Assurez-vous que l'utilisateur est connecté
     conn = get_db_connection()
     if conn is not None:
         try:
             with conn.cursor() as cursor:
-                cursor.execute("INSERT INTO conges (username, type, date) VALUES (%s, %s, %s)",
-                               (username, type_conge, date_conge))
+                cursor.execute("INSERT INTO conges (username, type, date_debut, date_fin) VALUES (%s, %s, %s, %s)",
+                               (username, type_conge, date_debut, date_fin))
                 conn.commit()
             flash("Congé ajouté avec succès!", "success")
         except Error as e:
@@ -80,6 +81,7 @@ def add_conge():
     else:
         flash("Problème de connexion à la base de données", "error")
     return redirect(url_for('calendar'))
+
 
 @app.route('/get_absences')
 def get_absences():
