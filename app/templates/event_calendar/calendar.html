@@ -85,6 +85,7 @@
                     center: 'title',
                     right: 'month,agendaWeek,agendaDay'
                 },
+                defaultView: 'month',
                 editable: true,
                 selectable: true,
                 selectHelper: true,
@@ -98,29 +99,7 @@
                     alert('Événement : ' + calEvent.title + '\nDébut : ' + moment(calEvent.start).format('YYYY-MM-DD') + '\nFin : ' + moment(calEvent.end).format('YYYY-MM-DD') + '\nDescription : ' + calEvent.description);
                 },
                 eventLimit: true,
-                events: function(start, end, timezone, callback) {
-                    $.ajax({
-                        url: '/path/to/fetch-events',
-                        dataType: 'json',
-                        data: {
-                            start: start.unix(),
-                            end: end.unix()
-                        },
-                        success: function(resp) {
-                            var events = [];
-                            $(resp).each(function() {
-                                events.push({
-                                    title: $(this).attr('title'),
-                                    start: $(this).attr('start'),
-                                    end: $(this).attr('end'),
-                                    description: $(this).attr('description'),
-                                    color: '#ff9f89' // Couleur personnalisée pour les congés
-                                });
-                            });
-                            callback(events);
-                        }
-                    });
-                }
+                events: '/api/leave_events' // URL pour charger les événements. Vous devez ajuster cela à votre endpoint API correct.
             });
 
             $('#leaveForm').on('submit', function(e) {
@@ -136,19 +115,19 @@
                     color: '#ff9f89' // Couleur personnalisée pour chaque événement
                 };
 
+                // Envoyer les données au serveur via AJAX
                 $.ajax({
-    url: '/api/data',  // Utilisez le chemin relatif de l'API
-    method: 'POST',
-    data: JSON.stringify({your: "data"}),
-    contentType: 'application/json',
-    success: function(response) {
-        console.log('Success:', response);
-    },
-    error: function(error) {
-        console.log('Error:', error);
-    }
-});
-
+                    url: '/api/leave_events',  // Assurez-vous que cette URL est correcte pour votre API
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(eventData),
+                    success: function(response) {
+                        $('#calendar').fullCalendar('renderEvent', eventData, true); // stick the event
+                        $('#leaveModal').modal('hide');
+                    },
+                    error: function() {
+                        alert('Erreur lors de l'enregistrement de l'événement');
+                    }
                 });
             });
         });
