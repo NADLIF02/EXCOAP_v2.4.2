@@ -59,10 +59,45 @@ def fetch_absences_from_db():
         {"id": 2, "type": "Congé maladie", "date": "2024-04-22"}
     ]
 
+@app.route('/add_conge', methods=['POST'])
+def add_conge():
+    type_conge = request.form['type']
+    date_conge = request.form['date']
+    username = session['user_id']  # Assurez-vous que l'utilisateur est connecté
+    conn = get_db_connection()
+    if conn is not None:
+        try:
+            with conn.cursor() as cursor:
+                cursor.execute("INSERT INTO conges (username, type, date) VALUES (%s, %s, %s)",
+                               (username, type_conge, date_conge))
+                conn.commit()
+            flash("Congé ajouté avec succès!", "success")
+        except Error as e:
+            flash("Erreur lors de l'ajout du congé : " + str(e), "error")
+        finally:
+            if conn.is_connected():
+                conn.close()
+    else:
+        flash("Problème de connexion à la base de données", "error")
+    return redirect(url_for('calendar'))
+
 @app.route('/get_absences')
 def get_absences():
-    absences = fetch_absences_from_db()
-    return jsonify(absences)
+    conn = get_db_connection()
+    if conn is not None:
+        try:
+            with conn.cursor(dictionary=True) as cursor:
+                cursor.execute("SELECT type, date FROM conges WHERE username=%s", (session['user_id'],))
+                absences = cursor.fetchall()
+            return jsonify(absences)
+        except Error as e:
+            print("Erreur lors de la récupération des absences : ", str(e))
+            return jsonify([])
+        finally:
+            if conn.is_connected():
+                conn.close()
+    return jsonify([])
+
     
 @app.route('/calendar')
 def calendar():
