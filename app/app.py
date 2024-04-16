@@ -24,7 +24,7 @@ def get_db_connection():
 def index():
     return render_template('auth/login.html')
 
-@@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['POST'])
 def login():
     username = request.form['username']
     password = request.form['password']
