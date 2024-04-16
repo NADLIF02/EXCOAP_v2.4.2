@@ -137,16 +137,18 @@
                 };
 
                 $.ajax({
-                    url: '/path/to/your/server/endpoint', // Remplacer par l'URL de votre API
-                    method: 'POST',
-                    data: eventData,
-                    success: function() {
-                        $('#calendar').fullCalendar('renderEvent', eventData, true);
-                        $('#leaveModal').modal('hide');
-                    },
-                    error: function() {
-                        alert('Erreur lors de l\'enregistrement de l\'événement');
-                    }
+    url: '/api/data',  // Utilisez le chemin relatif de l'API
+    method: 'POST',
+    data: JSON.stringify({your: "data"}),
+    contentType: 'application/json',
+    success: function(response) {
+        console.log('Success:', response);
+    },
+    error: function(error) {
+        console.log('Error:', error);
+    }
+});
+
                 });
             });
         });
