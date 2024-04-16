@@ -8,32 +8,47 @@
     <script src='https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js'></script>
     <script src='https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/3.10.2/fullcalendar.min.js'></script>
     <script>
-        $(document).ready(function() {
-            var calendar = $('#calendar').fullCalendar({
-                header: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'month,agendaWeek,agendaDay,listWeek'
-                },
-                editable: true,
-                navLinks: true,
-                eventLimit: true,
-                events: '/get_absences',
-                eventRender: function(event, element) {
-                    element.popover({
-                        title: event.title,
-                        content: 'Début: ' + moment(event.start).format('DD/MM/YYYY') +
-                                 '<br>Fin: ' + moment(event.end).format('DD/MM/YYYY'),
-                        trigger: 'hover',
-                        placement: 'top',
-                        container: 'body'
+        <script>
+$(document).ready(function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+        plugins: ['dayGrid', 'interaction', 'timeGrid', 'list'],
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek'
+        },
+        navLinks: true, // can click day/week names to navigate views
+        editable: true,
+        dayMaxEvents: true, // allow "more" link when too many events
+        events: function(fetchInfo, successCallback, failureCallback) {
+            $.ajax({
+                url: '/get_absences',
+                type: 'GET',
+                dataType: 'json',
+                success: function(response) {
+                    var events = [];
+                    response.forEach(function(absence) {
+                        events.push({
+                            title: absence.title,
+                            start: absence.start,
+                            end: absence.end
+                        });
                     });
+                    successCallback(events);
                 },
-                dayClick: function(date, jsEvent, view) {
-                    console.log('Clicked on: ' + date.format());
+                error: function() {
+                    alert('There was an error while fetching events!');
+                    failureCallback();
                 }
             });
-        });
+        }
+    });
+
+    calendar.render();
+});
+</script>
+
     </script>
     <style>
         body {
