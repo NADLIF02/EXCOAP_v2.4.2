@@ -10,15 +10,17 @@ bcrypt = Bcrypt(app)
 def get_db_connection():
     try:
         conn = mysql.connector.connect(
-            host='db',  # Le nom de service du conteneur de base de données dans docker-compose
+            host='db',
             user='myuser',
             password='mypassword',
             database='user_auth'
         )
+        print("Connected to database successfully.")
         return conn
     except Error as e:
-        print("Unable to connect to the database: ", str(e))
+        print("Unable to connect to the database:", str(e))
         return None
+
 
 @app.route('/')
 def index():
