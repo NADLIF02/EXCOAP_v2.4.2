@@ -9,7 +9,6 @@ COPY . /app
 
 # Upgrade pip to the latest version
 RUN pip install --upgrade pip
-RUN npm install
 # Install any needed packages specified in requirements.txt
 RUN pip install --no-cache-dir -r requirements.txt
 
