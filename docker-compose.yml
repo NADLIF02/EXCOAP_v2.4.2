@@ -27,4 +27,4 @@ services:
       - ./db/database.sql:/docker-entrypoint-initdb.d/init.sql  # Initializes the database
 
 volumes:
-  db_data:  # Persistent volume for MariaDB data
+  db_data:  # Persistent volume for MariaDB dataf
